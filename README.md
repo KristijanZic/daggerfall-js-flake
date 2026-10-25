@@ -25,9 +25,7 @@ This flake packages [DFO Online](https://daggerfalljs.dev/)
 From this repository checkout:
 
 ```bash
-nix run .            # uses the default package
-# or explicitly:
-nix run .#daggerfall-js
+nix run
 ```
 
 Or run it straight from GitHub, no clone needed:
@@ -42,10 +40,10 @@ nix run github:preprocessor/daggerfall-js-flake
 nix profile install github:preprocessor/daggerfall-js-flake#daggerfall-js
 ```
 
-This puts a `daggerfall-js` command on your `PATH`:
+This puts a `daggerfall-js` command to your `PATH`:
 
 ```bash
-daggerfall-js            # start the game
+daggerfall-js # start the game
 ```
 
 To uninstall:

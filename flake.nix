@@ -20,7 +20,7 @@
               inherit (versions) version;
               __structuredAttrs = true;
               strictDeps = true;
-              src = pkgs.fetchurl { inherit (versions.${system}) url hash; };
+              src = pkgs.fetchurl versions.${system};
             });
 
             default = self.packages.${system}.daggerfall-js;
