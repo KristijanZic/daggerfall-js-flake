@@ -1,5 +1,5 @@
 {
-  description = "Daggerfall Online Appimage for Nix";
+  description = "Daggerfall Online for Nix";
 
   inputs.nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.zst";
 
@@ -22,7 +22,7 @@
 
               src = pkgs.fetchurl {
                 url = "https://github.com/Lattymoy/daggerfall-js-source/releases/download/app-v${finalAttrs.version}/DaggerfallOnline-linux-x86_64.AppImage";
-                hash = "sha256-a7kwayoCWQdEqjtmdTbrBlhQZSeM8rKiz8cZw3+CQN4=";
+                hash = "sha256-TORylJSJzXHK806JJWBf+tZbQeCpit5XFbTGVdGR0/U=";
               };
             });
 
