@@ -13,14 +13,12 @@ This flake packages [DFO Online](https://daggerfalljs.dev/)
 | `default` | same as above | Alias for `daggerfall-js` |
 
 > macOS support is a work in progress — see the commented section in
-> [`flake.nix`](flake.nix). Upstream publishes an Apple Silicon (`arm64`) DMG
+> [`flake.nix`](flake.nix).
 
 ## Requirements
 
 - Nix with **flakes enabled**.
-- Roughly 400 MB of disk space. The first build/download pulls the app (~350 MB)
-  straight from the upstream GitHub releases — nothing is hosted on
-  cache.nixos.org.
+- Roughly 400 MB of disk space.
 
 ## Run it (no install)
 
