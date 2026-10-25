@@ -8,7 +8,6 @@
     let
       inherit (nixpkgs) lib;
       versions = builtins.fromJSON (builtins.readFile ./versions.json);
-      pname = "daggerfall-js";
       systemPkgs = system: f: f nixpkgs.legacyPackages.${system} system;
       allSystems = f: lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: systemPkgs system f);
     in
@@ -17,7 +16,7 @@
         x86_64-linux = systemPkgs "x86_64-linux" (
           pkgs: system: {
             daggerfall-js = pkgs.appimageTools.wrapType2 (finalAttrs: {
-              inherit pname;
+              pname = "daggerfall-js";
               inherit (versions) version;
               __structuredAttrs = true;
               strictDeps = true;
@@ -30,11 +29,11 @@
         # aarch64-darwin = systemPkgs "aarch64-darwin" (
         #   pkgs: system: {
         #     daggerfall-js = pkgs.stdenv.mkDerivation (finalAttrs: {
-        #       inherit pname version;
+        #       pname = "daggerfall-js";
+        #       inherit (versions) version;
         #       __structuredAttrs = true;
         #       strictDeps = true;
-        #
-        #         src = pkgs.fetchurl { inherit (versions.${system}) url hash; };
+        #       src = pkgs.fetchurl { inherit (versions.${system}) url hash; };
         #     });
         #
         #     default = self.packages.${system}.daggerfall-js;
