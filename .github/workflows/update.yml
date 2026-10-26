@@ -1,90 +1,36 @@
 ---
-name: Update
+name: Update package
 on:
+  workflow_dispatch:
   schedule:
-    # Run every 15 minutes.
+    # every 15 minutes
     - cron: '*/15 * * * *'
-    # Also update flake.lock weekly.
-    - cron: 27 4 * * 1
-  workflow_dispatch:  # Allow manual triggering
 permissions:
   contents: write
-  pull-requests: write
-concurrency:
-  group: update
-  cancel-in-progress: false
 jobs:
   update:
     runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.diff.outputs.changed }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-      - name: Update flake.lock
-        if: github.event.schedule == '27 4 * * 1' || github.event_name == 'workflow_dispatch'
-        run: nix flake update
-      - name: Update
-        run: nix run .#update
-      - name: Diff
-        id: diff
-        run: |
-          if git diff --quiet versions.json flake.lock; then
-            echo "Nothing ever happens."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "SOMETHING HAPPENED"
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Upload versions.json
-        if: steps.diff.outputs.changed == 'true'
-        uses: actions/upload-artifact@v7
-        with:
-          name: versions
-          path: |
-            versions.json
-            flake.lock
-  check:
-    needs: update
-    if: needs.update.outputs.changed == 'true'
-    strategy:
-      matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Download versions.json
-        uses: actions/download-artifact@v8
-        with:
-          name: versions
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-      - name: Check
-        run: nix flake check --print-build-logs
-  commit:
-    needs: check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Download versions.json
-        uses: actions/download-artifact@v8
-        with:
-          name: versions
-      - name: Commit, PR, Merge
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - name: Run nix-update
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          nix run nixpkgs#nix-update -- \
+            --flake \
+            --use-github-releases \
+            --version-regex 'app-v(.*)' \
+            --src-only \
+            daggerfall-js
+      - name: Commit and push
         run: |-
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git switch --create "update-versions-${{ github.run_id }}-${{ github.run_attempt }}"
-          git add versions.json flake.lock
-          title="Update $(git diff --cached --name-only | paste -sd, - | sed 's/,/, /g')"
-          git commit --message "$title"
-          git push origin HEAD
-          { echo '```diff'; git diff HEAD^ -- versions.json flake.lock; echo '```'; } \
-          | gh pr create --title "$title" --body-file -
-          gh pr merge --rebase --delete-branch || { gh pr close --delete-branch; exit 1; }
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@users.noreply.github.com"
+          if [[ -n $(git status --porcelain) ]]; then
+            git add package.nix
+            git commit -m "daggerfall-js: update to $(grep -oP '(?<=version = ")[^"]+' package.nix)"
+            git push
+          else
+            echo "No update available"
+          fi
