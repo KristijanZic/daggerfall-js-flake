@@ -1,7 +1,7 @@
 {
   stdenvNoCC,
   fetchurl,
-  undmg,
+  _7zz,
   ...
 }:
 let
@@ -19,17 +19,28 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     hash = "sha256-tMDTJVFdBOhKI4KKa3tsE4GJxnS/uPTrRxGzHamxsU0=";
   };
 
-  nativeBuildInputs = [ undmg ];
+  nativeBuildInputs = [ _7zz ];
   sourceRoot = ".";
 
   unpackPhase = ''
-    undmg "$src"
+    7zz x "$src"
   '';
 
   installPhase = ''
     runHook preInstall
+
     mkdir -p $out/Applications
     cp -pR "DFO Online.app" "$out/Applications/"
+
+    mkdir -p $out/bin
+    echo "#!/usr/bin/env bash" > $out/bin/${pname}
+    echo "open \"$out/Applications/DFO Online.app\"" >> $out/bin/${pname}
+    chmod +x $out/bin/${pname}
+
     runHook postInstall
   '';
+
+  meta = {
+    mainProgram = pname;
+  };
 })
