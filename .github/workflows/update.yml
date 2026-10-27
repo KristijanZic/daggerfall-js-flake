@@ -22,14 +22,15 @@ jobs:
             --use-github-releases \
             --version-regex 'app-v(.*)' \
             --src-only \
+            --system x86_64-linux \
             daggerfall-js
       - name: Commit and push
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "actions@users.noreply.github.com"
           if [[ -n $(git status --porcelain) ]]; then
-            git add package.nix
-            git commit -m "daggerfall-js: update to $(grep -oP '(?<=version = ")[^"]+' package.nix)"
+            git add packages/linux.nix
+            git commit -m "daggerfall-js: update to $(grep -oP '(?<=version = ")[^"]+' packages/linux.nix)"
             git push
           else
             echo "No update available"
