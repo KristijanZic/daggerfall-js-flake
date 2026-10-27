@@ -29,8 +29,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "actions@users.noreply.github.com"
           if [[ -n $(git status --porcelain) ]]; then
-            git add packages/linux.nix
-            git commit -m "daggerfall-js: update to $(grep -oP '(?<=version = ")[^"]+' packages/linux.nix)"
+            git add packages/linux.nix packages/darwin.nix
+            git commit -m "daggerfall-js: update to $(grep -oP '(?<=version = ")[^"]+')"
             git push
           else
             echo "No update available"
