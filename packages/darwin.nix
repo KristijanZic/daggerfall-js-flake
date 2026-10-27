@@ -29,7 +29,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
     mkdir -p $out/Applications
-    cp -pR "${finalAttrs.pname}.app" "$out/Applications/"
+    cp -pR "DFO Online.app" "$out/Applications/"
     runHook postInstall
   '';
 })
