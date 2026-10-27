@@ -8,8 +8,8 @@ on:
 permissions:
   contents: write
 jobs:
-  update:
-    runs-on: ubuntu-latest macos-latest
+  update-linux:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
@@ -29,8 +29,35 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "actions@users.noreply.github.com"
           if [[ -n $(git status --porcelain) ]]; then
-            git add packages/linux.nix packages/darwin.nix
-            git commit -m "daggerfall-js: update to $(grep -oP '(?<=version = ")[^"]+')"
+            git add packages/linux.nix
+            git commit -m "daggerfall-js: update linux package to $(grep -oP '(?<=version = ")[^"]+' packages/linux.nix)"
+            git push
+          else
+            echo "No update available"
+          fi
+  update-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - name: Run nix-update
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          nix run nixpkgs#nix-update -- \
+            --flake \
+            --use-github-releases \
+            --version-regex 'app-v(.*)' \
+            --src-only \
+            --system aarch64-darwin \
+            daggerfall-js
+      - name: Commit and push
+        run: |-
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@users.noreply.github.com"
+          if [[ -n $(git status --porcelain) ]]; then
+            git add packages/darwin.nix
+            git commit -m "daggerfall-js: update darwin package to $(grep -oP '(?<=version = ")[^"]+' packages/darwin.nix)"
             git push
           else
             echo "No update available"
