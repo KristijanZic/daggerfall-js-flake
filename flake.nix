@@ -16,12 +16,12 @@
             default = self.packages.${system}.daggerfall-js;
           }
         );
-        # aarch64-darwin = systemPkgs "aarch64-darwin" (
-        #   pkgs: system: {
-        #     daggerfall-js = pkgs.callPackage ./packages/darwin.nix { };
-        #     default = self.packages.${system}.daggerfall-js;
-        #   }
-        # );
+        aarch64-darwin = systemPkgs "aarch64-darwin" (
+          pkgs: system: {
+            daggerfall-js = pkgs.callPackage ./packages/darwin.nix { };
+            default = self.packages.${system}.daggerfall-js;
+          }
+        );
       };
     };
 }
