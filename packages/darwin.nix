@@ -16,7 +16,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   src = fetchurl {
     url = "https://github.com/Lattymoy/daggerfall-js-source/releases/download/app-v${finalAttrs.version}/DaggerfallOnline-mac-arm64.dmg";
-    hash = "sha256-Cq52X7TUuT2fBCY2MZgZWgI9icBfTqyL0D7+EgF/a80=";
+    hash = "sha256-tMDTJVFdBOhKI4KKa3tsE4GJxnS/uPTrRxGzHamxsU0=";
   };
 
   nativeBuildInputs = [ undmg ];
