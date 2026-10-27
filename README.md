@@ -9,11 +9,8 @@ This flake packages [DFO Online](https://daggerfalljs.dev/)
 
 | Package | Systems | Description |
 | --- | --- | --- |
-| `daggerfall-js` | `x86_64-linux` | The desktop app, wrapped from the upstream AppImage |
+| `daggerfall-js` | `x86_64-linux` `aarch64-darwin` | The desktop app, wrapped from the upstream AppImage |
 | `default` | same as above | Alias for `daggerfall-js` |
-
-> macOS support is a work in progress — see the commented section in
-> [`flake.nix`](flake.nix).
 
 ## Requirements
 
