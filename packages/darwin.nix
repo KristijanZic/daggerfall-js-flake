@@ -33,14 +33,14 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     cp -pR "DFO Online.app" "$out/Applications/"
 
     mkdir -p $out/bin
-    echo "#!/usr/bin/env bash" > $out/bin/${pname}
-    echo "open \"$out/Applications/DFO Online.app\"" >> $out/bin/${pname}
+    cat << EOF > $out/bin/${pname}
+    #!/usr/bin/env bash
+    open "$out/Applications/DFO Online.app"
+    EOF
     chmod +x $out/bin/${pname}
 
     runHook postInstall
   '';
 
-  meta = {
-    mainProgram = pname;
-  };
+  meta.mainProgram = pname;
 })
